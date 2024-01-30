@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 import { IsBirthDate } from 'src/commom/validators/is-birth-date.validator';
-import { IsValidCPF } from 'src/commom/validators/is-valid-cpf.validator';
+import { IsCPF } from 'src/commom/validators/is-cpf.validator';
 
 export class CreateCustomerDto {
   @IsNotEmpty()
@@ -12,7 +12,7 @@ export class CreateCustomerDto {
   @IsNotEmpty()
   @MinLength(11)
   @MaxLength(14)
-  @IsValidCPF({ message: 'Invalid CPF' })
+  @IsCPF({ message: 'Invalid CPF' })
   cpf: string;
 
   @IsNotEmpty()
