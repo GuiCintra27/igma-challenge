@@ -7,10 +7,10 @@ import {
 
 @ValidatorConstraint({ name: 'isBirthDate', async: false })
 export class IsBirthDateConstraint implements ValidatorConstraintInterface {
-  validate(value: Date) {
-    return (
-      value instanceof Date && !isNaN(value.getTime()) && value < new Date()
-    );
+  validate(value: Date | string) {
+    value = new Date(value);
+
+    return !isNaN(value.getTime()) && value < new Date();
   }
 }
 
