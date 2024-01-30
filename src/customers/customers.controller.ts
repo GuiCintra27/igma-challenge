@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpException } from '@nestjs/common';
+
 import { CustomersService } from './customers.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 
@@ -7,8 +8,16 @@ export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 
   @Post()
-  create(@Body() createCustomerDto: CreateCustomerDto) {
-    return this.customersService.create(createCustomerDto);
+  async create(@Body() createCustomerDto: CreateCustomerDto) {
+    try {
+      await this.customersService.create(createCustomerDto);
+    } catch (error) {
+      if (error.name === 'InvalidDataError' && error.message) {
+        throw new HttpException(error.message, error.status);
+      }
+
+      throw new Error(error);
+    }
   }
 
   @Get()
