@@ -17,5 +17,5 @@ export class CreateCustomerDto {
 
   @IsNotEmpty()
   @IsBirthDate({ message: 'Invalid birth date' })
-  birthdate: Date;
+  birthDate: Date;
 }
