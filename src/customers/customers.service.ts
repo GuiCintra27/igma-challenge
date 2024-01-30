@@ -1,8 +1,12 @@
+import { Customer } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { PrismaService } from 'src/prisma/prisma/prisma.service';
 import { InvalidDataError } from 'src/errors/invalid-data-error';
+import { FindByCPFParamsDto } from './dto/find-by-cpf-params.dto';
+
+type CustomerData = Omit<Customer, 'created_at' | 'updated_at'>;
 
 @Injectable()
 export class CustomersService {
@@ -43,8 +47,9 @@ export class CustomersService {
 
   async create(createCustomerDto: CreateCustomerDto): Promise<void> {
     const { name, cpf, birthDate } = createCustomerDto;
+    const cpfNumbers = cpf.replace(/\D/g, '');
 
-    if (!this.isValidCPF(cpf.replace(/\D/g, '')))
+    if (!this.isValidCPF(cpfNumbers))
       throw new InvalidDataError({
         message: 'Invalid CPF',
         name: 'InvalidDataError',
@@ -55,14 +60,70 @@ export class CustomersService {
       this.prismaService.customer.create({
         data: {
           name,
-          cpf,
+          cpf: cpfNumbers,
           birth_date: new Date(birthDate),
         },
       }),
     ]);
   }
 
-  findAll() {
-    return `This action returns all customers`;
+  async findAll({
+    page,
+  }: {
+    page?: number;
+  }): Promise<{ customers: CustomerData[]; pagesCount: number }> {
+    const [customers, pagesCount] = await this.prismaService.$transaction([
+      this.prismaService.customer.findMany({
+        select: {
+          id: true,
+          name: true,
+          cpf: true,
+          birth_date: true,
+        },
+        skip: page ? page * 10 : 10,
+        take: 10,
+      }),
+      this.prismaService.customer.count(),
+    ]);
+
+    if (page) {
+      if (customers.length === 0) {
+        throw new InvalidDataError({
+          message: 'Customers not found',
+          name: 'InvalidDataError',
+          status: 404,
+        });
+      }
+    }
+
+    return {
+      customers,
+      pagesCount: Math.floor(pagesCount / 10),
+    };
+  }
+
+  async findByCPF({ cpf }: FindByCPFParamsDto): Promise<CustomerData> {
+    console.log(cpf);
+    const customer = await this.prismaService.customer.findUnique({
+      select: {
+        id: true,
+        name: true,
+        cpf: true,
+        birth_date: true,
+      },
+      where: {
+        cpf,
+      },
+    });
+
+    if (!customer) {
+      throw new InvalidDataError({
+        message: 'Customer not found',
+        name: 'InvalidDataError',
+        status: 404,
+      });
+    }
+
+    return customer;
   }
 }

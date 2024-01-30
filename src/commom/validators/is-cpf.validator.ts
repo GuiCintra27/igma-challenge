@@ -1,5 +1,3 @@
-// src/common/validators/is-birth-date.validator.ts
-
 import {
   registerDecorator,
   ValidationOptions,

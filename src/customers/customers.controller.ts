@@ -1,7 +1,17 @@
-import { Controller, Get, Post, Body, HttpException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  HttpException,
+  Query,
+  ValidationPipe,
+} from '@nestjs/common';
 
 import { CustomersService } from './customers.service';
+import { FindAllParamsDto } from './dto/find-all-params.dto';
 import { CreateCustomerDto } from './dto/create-customer.dto';
+import { FindByCPFParamsDto } from './dto/find-by-cpf-params.dto';
 
 @Controller('customers')
 export class CustomersController {
@@ -21,7 +31,45 @@ export class CustomersController {
   }
 
   @Get()
-  findAll() {
-    return this.customersService.findAll();
+  findAll(
+    @Query(
+      new ValidationPipe({
+        transform: true,
+        transformOptions: {
+          enableImplicitConversion: true,
+        },
+      }),
+    )
+    { page }: FindAllParamsDto,
+  ) {
+    try {
+      return this.customersService.findAll({
+        page,
+      });
+    } catch (error) {
+      if (error.name === 'InvalidDataError' && error.message) {
+        throw new HttpException(error.message, error.status);
+      }
+
+      throw new Error(error);
+    }
+  }
+
+  @Get('CPF')
+  findByCPF(
+    @Query()
+    { cpf }: FindByCPFParamsDto,
+  ) {
+    try {
+      return this.customersService.findByCPF({
+        cpf,
+      });
+    } catch (error) {
+      if (error.name === 'InvalidDataError' && error.message) {
+        throw new HttpException(error.message, error.status);
+      }
+
+      throw new Error(error);
+    }
   }
 }
