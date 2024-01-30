@@ -56,6 +56,19 @@ export class CustomersService {
         status: 422,
       });
 
+    const cpfAlreadyExists = await this.prismaService.customer.findUnique({
+      where: {
+        cpf: cpfNumbers,
+      },
+    });
+
+    if (cpfAlreadyExists)
+      throw new InvalidDataError({
+        message: 'Customer already exists',
+        name: 'InvalidDataError',
+        status: 409,
+      });
+
     await this.prismaService.$transaction([
       this.prismaService.customer.create({
         data: {
@@ -103,7 +116,8 @@ export class CustomersService {
   }
 
   async findByCPF({ cpf }: FindByCPFParamsDto): Promise<CustomerData> {
-    console.log(cpf);
+    const cpfNumbers = cpf.replace(/\D/g, '');
+
     const customer = await this.prismaService.customer.findUnique({
       select: {
         id: true,
@@ -112,7 +126,7 @@ export class CustomersService {
         birth_date: true,
       },
       where: {
-        cpf,
+        cpf: cpfNumbers,
       },
     });
 
