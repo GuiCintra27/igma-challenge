@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 import { IsBirthDate } from 'src/commom/validators/is-birth-date.validator';
 import { IsCPF } from 'src/commom/validators/is-cpf.validator';
@@ -12,10 +13,11 @@ export class CreateCustomerDto {
   @IsNotEmpty()
   @MinLength(11)
   @MaxLength(14)
-  @IsCPF({ message: 'Invalid CPF' })
+  @IsCPF({ message: 'Invalid CPF format' })
   cpf: string;
 
   @IsNotEmpty()
   @IsBirthDate({ message: 'Invalid birth date' })
+  @Type(() => Date)
   birthDate: Date;
 }
