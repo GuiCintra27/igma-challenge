@@ -8,16 +8,16 @@ export class CreateCustomerDto {
   @IsString()
   @MinLength(3)
   @MaxLength(255)
-  name: string;
+  public readonly name: string;
 
   @IsNotEmpty()
   @MinLength(11)
   @MaxLength(14)
   @IsCPF({ message: 'Invalid CPF format' })
-  cpf: string;
+  public readonly cpf: string;
 
   @IsNotEmpty()
   @IsBirthDate({ message: 'Invalid birth date' })
   @Type(() => Date)
-  birthDate: Date;
+  public readonly birthDate: Date;
 }
