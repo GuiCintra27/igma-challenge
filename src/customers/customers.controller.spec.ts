@@ -24,13 +24,36 @@ describe('CustomersController', () => {
 
   describe('When calling customerFindAll', () => {
     it('it should call customerFindAll function', () => {
-      controller.findAll();
+      controller.findAll({});
       expect(mockCustomersService.findAll).toHaveBeenCalled();
     });
 
     it('it should return an array', async () => {
-      const result = await controller.findAll();
+      const result = await controller.findAll({});
       expect(result).toBeInstanceOf(Array);
+    });
+  });
+
+  describe('When calling findByCPF', () => {
+    it('it should call findByCPF function', () => {
+      controller.findByCPF({ cpf: '12345678901' });
+      expect(mockCustomersService.findByCPF).toHaveBeenCalled();
+    });
+
+    it('it should return an object', async () => {
+      const result = await controller.findByCPF({ cpf: '12345678901' });
+      expect(result).toBeInstanceOf(Object);
+    });
+  });
+
+  describe('When calling create', () => {
+    it('it should call create function', () => {
+      controller.create({
+        name: 'John',
+        cpf: '12345678901',
+        birthDate: new Date(),
+      });
+      expect(mockCustomersService.create).toHaveBeenCalled();
     });
   });
 });
