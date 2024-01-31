@@ -111,7 +111,7 @@ export class CustomersService {
 
     return {
       customers,
-      pagesCount: Math.floor(pagesCount / 10),
+      pagesCount: Math.ceil(pagesCount / 10),
     };
   }
 

@@ -52,7 +52,7 @@ describe('CustomersService', () => {
 
         expect(result).toEqual({
           customers,
-          pagesCount: 1,
+          pagesCount: 2,
         });
       });
 
