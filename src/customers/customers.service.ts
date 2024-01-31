@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { PrismaService } from 'src/prisma/prisma/prisma.service';
-import { InvalidDataError } from 'src/errors/invalid-data-error';
 import { FindByCPFParamsDto } from './dto/find-by-cpf-params.dto';
+import { BadRequestError, ConflictError, NotFoundError } from 'src/errors';
 
 type CustomerData = Omit<Customer, 'created_at' | 'updated_at'>;
 
@@ -50,10 +50,8 @@ export class CustomersService {
     const cpfNumbers = cpf.replace(/\D/g, '');
 
     if (!this.isValidCPF(cpfNumbers))
-      throw new InvalidDataError({
+      throw new BadRequestError({
         message: 'Invalid CPF',
-        name: 'InvalidDataError',
-        status: 422,
       });
 
     const cpfAlreadyExists = await this.prismaService.customer.findUnique({
@@ -63,10 +61,8 @@ export class CustomersService {
     });
 
     if (cpfAlreadyExists)
-      throw new InvalidDataError({
+      throw new ConflictError({
         message: 'Customer already exists',
-        name: 'InvalidDataError',
-        status: 409,
       });
 
     await this.prismaService.$transaction([
@@ -100,13 +96,10 @@ export class CustomersService {
     ]);
 
     if (page) {
-      if (customers.length === 0) {
-        throw new InvalidDataError({
+      if (customers.length === 0)
+        throw new NotFoundError({
           message: 'Customers not found',
-          name: 'InvalidDataError',
-          status: 404,
         });
-      }
     }
 
     return {
@@ -118,12 +111,11 @@ export class CustomersService {
   async findByCPF({ cpf }: FindByCPFParamsDto): Promise<CustomerData> {
     const cpfNumbers = cpf.replace(/\D/g, '');
 
-    if (!this.isValidCPF(cpfNumbers))
-      throw new InvalidDataError({
+    if (!this.isValidCPF(cpfNumbers)) {
+      throw new BadRequestError({
         message: 'Invalid CPF',
-        name: 'InvalidDataError',
-        status: 422,
       });
+    }
 
     const customer = await this.prismaService.customer.findUnique({
       select: {
@@ -137,13 +129,10 @@ export class CustomersService {
       },
     });
 
-    if (!customer) {
-      throw new InvalidDataError({
+    if (!customer)
+      throw new NotFoundError({
         message: 'Customer not found',
-        name: 'InvalidDataError',
-        status: 404,
       });
-    }
 
     return customer;
   }

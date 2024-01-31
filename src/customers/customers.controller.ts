@@ -24,7 +24,7 @@ export class CustomersController {
     try {
       await this.customersService.create(createCustomerDto);
     } catch (error) {
-      if (error.name === 'InvalidDataError' && error.message) {
+      if (error.status === 409 || error.status === 422) {
         throw new HttpException(error.message, error.status);
       }
 
@@ -49,7 +49,7 @@ export class CustomersController {
         page,
       });
     } catch (error) {
-      if (error.name === 'InvalidDataError' && error.message) {
+      if (error.status === 404) {
         throw new HttpException(error.message, error.status);
       }
 
@@ -67,7 +67,7 @@ export class CustomersController {
         cpf,
       });
     } catch (error) {
-      if (error.name === 'InvalidDataError' && error.message) {
+      if (error.status === 404 || error.status === 422) {
         throw new HttpException(error.message, error.status);
       }
 
