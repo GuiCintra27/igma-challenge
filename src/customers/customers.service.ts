@@ -93,7 +93,7 @@ export class CustomersService {
           cpf: true,
           birth_date: true,
         },
-        skip: page ? page * 10 : 0,
+        skip: page ? (page - 1) * 10 : 0,
         take: 10,
       }),
       this.prismaService.customer.count(),
@@ -117,6 +117,13 @@ export class CustomersService {
 
   async findByCPF({ cpf }: FindByCPFParamsDto): Promise<CustomerData> {
     const cpfNumbers = cpf.replace(/\D/g, '');
+
+    if (!this.isValidCPF(cpfNumbers))
+      throw new InvalidDataError({
+        message: 'Invalid CPF',
+        name: 'InvalidDataError',
+        status: 422,
+      });
 
     const customer = await this.prismaService.customer.findUnique({
       select: {
