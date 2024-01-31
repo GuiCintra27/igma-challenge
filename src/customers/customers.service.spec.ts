@@ -65,10 +65,16 @@ describe('CustomersService', () => {
   });
 
   describe('When calling findByCPF', () => {
-    it('it should throw an error if the customer does not exist', async () => {
+    it('it should throw an error if CPF is invalid', async () => {
       await expect(service.findByCPF({ cpf: '12345678901' })).rejects.toThrow(
-        'Customer not found',
+        'Invalid CPF',
       );
+    });
+
+    it('it should throw an error if the customer does not exist', async () => {
+      await expect(
+        service.findByCPF({ cpf: factory.CPFGenerator() }),
+      ).rejects.toThrow('Customer not found');
     });
 
     describe('When a valid CPF is given', () => {
