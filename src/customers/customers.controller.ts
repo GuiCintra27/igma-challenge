@@ -18,7 +18,9 @@ export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 
   @Post()
-  async create(@Body() createCustomerDto: CreateCustomerDto) {
+  async create(
+    @Body(new ValidationPipe()) createCustomerDto: CreateCustomerDto,
+  ) {
     try {
       await this.customersService.create(createCustomerDto);
     } catch (error) {
@@ -57,7 +59,7 @@ export class CustomersController {
 
   @Get('CPF')
   findByCPF(
-    @Query()
+    @Query(new ValidationPipe())
     { cpf }: FindByCPFParamsDto,
   ) {
     try {
