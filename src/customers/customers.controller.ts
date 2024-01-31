@@ -18,11 +18,13 @@ export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 
   @Post()
-  async create(@Body() createCustomerDto: CreateCustomerDto) {
+  async create(
+    @Body(new ValidationPipe()) createCustomerDto: CreateCustomerDto,
+  ) {
     try {
       await this.customersService.create(createCustomerDto);
     } catch (error) {
-      if (error.name === 'InvalidDataError' && error.message) {
+      if (error.status === 409 || error.status === 422) {
         throw new HttpException(error.message, error.status);
       }
 
@@ -47,7 +49,7 @@ export class CustomersController {
         page,
       });
     } catch (error) {
-      if (error.name === 'InvalidDataError' && error.message) {
+      if (error.status === 404) {
         throw new HttpException(error.message, error.status);
       }
 
@@ -57,7 +59,7 @@ export class CustomersController {
 
   @Get('CPF')
   findByCPF(
-    @Query()
+    @Query(new ValidationPipe())
     { cpf }: FindByCPFParamsDto,
   ) {
     try {
@@ -65,7 +67,7 @@ export class CustomersController {
         cpf,
       });
     } catch (error) {
-      if (error.name === 'InvalidDataError' && error.message) {
+      if (error.status === 404 || error.status === 422) {
         throw new HttpException(error.message, error.status);
       }
 
