@@ -37,8 +37,10 @@ export class CustomersFactory {
 
   public async createCustomers({
     qtd = 14,
+    page,
   }: {
     qtd?: number;
+    page?: number;
   }): Promise<CustomerData[]> {
     const cpfs = [];
 
@@ -59,7 +61,7 @@ export class CustomersFactory {
         }),
       ]);
 
-      const customers = await this.findMany();
+      const customers = await this.findMany({ page });
 
       return customers;
     } catch (error) {
@@ -67,7 +69,7 @@ export class CustomersFactory {
     }
   }
 
-  public async findMany(): Promise<CustomerData[]> {
+  public async findMany({ page }: { page?: number }): Promise<CustomerData[]> {
     const customers = await this.prismaService.customer.findMany({
       select: {
         id: true,
@@ -75,6 +77,7 @@ export class CustomersFactory {
         cpf: true,
         birth_date: true,
       },
+      skip: page ? (page - 1) * 10 : 0,
       take: 10,
     });
     return customers;
