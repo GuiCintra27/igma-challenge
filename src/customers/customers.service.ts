@@ -93,7 +93,7 @@ export class CustomersService {
           cpf: true,
           birth_date: true,
         },
-        skip: page ? page * 10 : 10,
+        skip: page ? page * 10 : 0,
         take: 10,
       }),
       this.prismaService.customer.count(),
