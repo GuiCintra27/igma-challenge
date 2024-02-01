@@ -1,0 +1,51 @@
+version: '3'
+
+networks:
+  dev:
+    driver: bridge
+
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@host.docker.internal:9000/igma_challenge
+      - DATABASE_TEST_URL=postgres://postgres:postgres@host.docker.internal:9001/igma_challenge_test
+    volumes:
+      - .:/src/app
+    depends_on:
+      - postgres
+      - postgres-test
+    networks:
+      - dev
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+
+  postgres:
+    image: postgres
+    ports:
+      - 9000:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=igma_challenge
+    restart: always
+    volumes:
+      - .pgdata:/var/lib/postgresql/data
+    networks:
+      - dev
+
+  postgres-test:
+    image: postgres
+    ports:
+      - 9001:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=igma_challenge_test
+    restart: always
+    volumes:
+      - .pgdata_test:/var/lib/postgresql/data
+    networks:
+      - dev
