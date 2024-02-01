@@ -9,12 +9,13 @@
   <br/>
 </div>
 <div align="center">
+  <a href="https://horse-catmint-5ee.notion.site/Igma-Challenge-Documentation-d49c6c2f22304ebe9c9ef2f265724652?pvs=4">Documentação</a> •
   <a href="#about">Sobre</a> •
   <a href="#features">Características</a> •
   <a href="#technologies">Tecnologias</a> •
-  <a href="#technologies">Versão Disponível</a> •
-  <a href="#technologies">Ambiente</a> •
+  <a href="#enviroment">Ambiente</a> •
   <a href="#run">Como Rodar?</a>
+  <a href="#links">Links</a> •
 </div>
 
 ## <span id="about">🌐 Sobre o Projeto</span>
@@ -58,12 +59,6 @@ Abaixo seguem as ferramentas e frameworks utilizados no projeto: <br/>
   <img alt="Gui-Docker" height="30" src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white">
   <img alt="Gui-Ts" height="30" src="https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white">
 </div>
-
-</br>
-
-## <span id="live-version">🚀 Versão Disponível</span>
-
-Você pode verificar a documentação e realizar testes na API visitando a versão live hospedada em [igma-challenge-production.up.railway.appl](https://igma-challenge-production.up.railway.appl).
 
 </br>
 
@@ -134,3 +129,10 @@ $ npm run test:e2e
 # cobertura dos testes
 $ npm run test:cov
 ```
+
+---
+
+## <span id="live-version">🚀 Links</span>
+
+Você pode verificar a versão disponível hospedada em [igma-challenge-production.up.railway.appl](https://igma-challenge-production.up.railway.appl).
+A documentação do site também está disponível em [Notion](https://horse-catmint-5ee.notion.site/Igma-Challenge-Documentation-d49c6c2f22304ebe9c9ef2f265724652?pvs=4)
