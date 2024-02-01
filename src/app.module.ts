@@ -9,7 +9,7 @@ import { CustomersModule } from './customers/customers.module';
       isGlobal: true,
     }),
     PrismaModule,
-    CustomersModule
+    CustomersModule,
   ],
   controllers: [],
   providers: [],
