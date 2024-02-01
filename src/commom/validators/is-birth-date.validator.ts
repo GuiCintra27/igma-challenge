@@ -15,7 +15,7 @@ export class IsBirthDateConstraint implements ValidatorConstraintInterface {
 }
 
 export function IsBirthDate(validationOptions?: ValidationOptions) {
-  return function (object: 'any object', propertyName: string) {
+  return function (object: Object, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,
